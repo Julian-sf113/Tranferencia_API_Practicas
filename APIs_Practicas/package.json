@@ -1,4 +1,16 @@
 {
+  "name": "apis-practicas",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "app.js",
+  "scripts": {
+    "server": "npx json-server db.json",
+    "enun1": "node services/enun1.js",
+    "enun2": "node services/enun2.js",
+    "enun3": "node services/enun3.js",
+    "enun4": "node services/enun4.js",
+    "start": "node app.js"
+  },
   "dependencies": {
     "json-server": "^1.0.0-beta.5"
   }
