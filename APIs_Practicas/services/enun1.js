@@ -1,0 +1,80 @@
+// Enunciado 1: (Usuarios activos y sus publicaciones)
+
+// Una aplicación web requiere mostrar un listado de usuarios activos junto con la cantidad
+// de publicaciones que han realizado. Sin embargo, no todos los usuarios han creado
+// publicaciones. El sistema debe identificar correctamente estos casos.
+
+// Requerimientos
+// • Consultar la lista completa de usuarios.
+// • Consultar la lista de publicaciones.
+// • Identificar cuáles usuarios tienen publicaciones asociadas.
+// • Calcular la cantidad de publicaciones por usuario.
+// • Mostrar también los usuarios que no tienen publicaciones.
+
+import { getUsers, getPosts } from './apiService.js';
+
+// Declaración de función asíncrona con arrow function
+export const getUsersAndPosts = async () => {
+    // Inicia bloque de manejo de errores
+    try {
+        // Obtiene usuarios y publicaciones usando el servicio compartido
+        const users = await getUsers();
+        const posts = await getPosts();
+
+        // Crea array vacío para guardar resultados
+        const resultado = [];
+
+        // Itera sobre cada usuario
+        for (let i = 0; i < users.length; i++) {
+            // Verifica si el usuario está activo
+            if (users[i].active == true) {
+                // Inicializa contador de publicaciones en 0
+                let contador = 0;
+
+                // Itera sobre cada publicación
+                for (let j = 0; j < posts.length; j++) {
+                    // Compara si la publicación pertenece al usuario actual
+                    if (posts[j].userId == users[i].id) {
+                        // Incrementa el contador si coincide
+                        contador = contador + 1;
+                    }
+                } // Fin del for de publicaciones
+
+                // Agrega objeto con nombre y cantidad al resultado
+                resultado.push({
+                    nombre: users[i].name, // Nombre del usuario
+                    cantidadPublicaciones: contador // Total de publicaciones
+                });
+            } // Fin del if de usuario activo
+        } // Fin del for de usuarios
+
+        // Imprime encabezado en consola
+        console.log('\n=== USUARIOS ACTIVOS Y SUS PUBLICACIONES ===\n');
+
+        // Itera sobre el resultado para mostrar cada usuario
+        for (let k = 0; k < resultado.length; k++) {
+            // Verifica si no tiene publicaciones
+            if (resultado[k].cantidadPublicaciones == 0) {
+                // Muestra usuario sin publicaciones
+                console.log(`${resultado[k].nombre}: Sin publicaciones`);
+            } else {
+                // Muestra usuario con su cantidad de publicaciones
+                console.log(`${resultado[k].nombre}: Publicaciones: ${resultado[k].cantidadPublicaciones}`);
+            }
+        } // Fin del for de resultados
+
+        // Retorna el array con los resultados
+        return resultado;
+
+    } catch (error) {
+        // Muestra mensaje de error en consola
+        console.error('Error:', error.message);
+        // Lanza el error para manejo externo
+        throw error;
+    }
+}; // Fin de la función
+
+// Ejecuta la función si se corre directamente este archivo
+if (import.meta.url === `file:///${process.argv[1].replace(/\\/g, '/')}`) {
+    getUsersAndPosts();
+}
